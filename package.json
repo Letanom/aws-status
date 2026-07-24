@@ -1,0 +1,13 @@
+{
+  "name": "aws-status-netlify",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AWS status dashboard: DownDetector + AWS RSS cross-check, runs on Netlify Scheduled Functions every 5 minutes.",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^2.8.2"
+  }
+}
