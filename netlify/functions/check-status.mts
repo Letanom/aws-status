@@ -12,6 +12,10 @@ const AWS_RSS_URL = "https://status.aws.amazon.com/rss/all.rss";
 const NTFY_TOPIC = "aws-alerts-letanom-kevino007";
 const HISTORY_MAX = 60;
 
+// Set this in Netlify: Site settings -> Environment variables -> GOOGLE_CHAT_WEBHOOK_URL
+// Never hardcode it here - this repo is public and the URL contains a secret key+token.
+const GOOGLE_CHAT_WEBHOOK_URL = process.env.GOOGLE_CHAT_WEBHOOK_URL;
+
 const PROBLEM_KEYWORDS = ["problem", "outage", "issue", "reported"];
 const OK_KEYWORDS = ["no problem", "status is normal", "no issues"];
 
@@ -25,6 +29,7 @@ interface StatusState {
   ddProblem: boolean;
   awsProblem: boolean;
   confirmedProblem: boolean;
+  parseFailed: boolean;
   awsItems: string[];
   history: Array<{
     time: string;
@@ -94,66 +99,111 @@ async function sendNtfy(title: string, message: string, priority = "default"): P
   }
 }
 
+async function sendGoogleChat(title: string, message: string): Promise<void> {
+  if (!GOOGLE_CHAT_WEBHOOK_URL) {
+    console.error("GOOGLE_CHAT_WEBHOOK_URL env var not set, skipping Google Chat alert");
+    return;
+  }
+  try {
+    await fetch(GOOGLE_CHAT_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({ text: `*${title}*\n${message}` }),
+    });
+  } catch (e) {
+    console.error("Google Chat notification failed:", e);
+  }
+}
+
+async function sendAlert(title: string, message: string, priority = "default"): Promise<void> {
+  await Promise.all([sendNtfy(title, message, priority), sendGoogleChat(title, message)]);
+}
+
 export default async (req: Request) => {
   const store = getStore("aws-status");
-
-  const currentStatus = await fetchDownDetectorStatus();
-  const lower = currentStatus.toLowerCase();
-  const ddProblem =
-    PROBLEM_KEYWORDS.some((k) => lower.includes(k)) && !OK_KEYWORDS.some((k) => lower.includes(k));
-
-  const { problem: awsProblem, items: awsItems } = await fetchAwsRssRecentIssues(60);
-
   const prev = (await store.get("state", { type: "json" })) as StatusState | null;
-  const wasConfirmedProblem = prev?.confirmedProblem ?? false;
 
-  const isConfirmedProblem = ddProblem && awsProblem;
+  try {
+    const currentStatus = await fetchDownDetectorStatus();
+    const lower = currentStatus.toLowerCase();
+    const parseFailed = currentStatus.startsWith("UNKNOWN");
+    const wasParseFailed = prev?.parseFailed ?? false;
+    const ddProblem =
+      PROBLEM_KEYWORDS.some((k) => lower.includes(k)) && !OK_KEYWORDS.some((k) => lower.includes(k));
 
-  if (isConfirmedProblem && !wasConfirmedProblem) {
-    await sendNtfy(
-      "🔴 AWS Outage Confirmed",
-      `DownDetector AND AWS's own status feed both indicate a problem.\n\nDownDetector: ${currentStatus}\n\nAWS RSS:\n${awsItems
-        .slice(0, 5)
-        .join("\n")}\n\n${DOWNDETECTOR_URL}`,
-      "urgent"
-    );
-  } else if (ddProblem && !awsProblem && !wasConfirmedProblem) {
-    await sendNtfy(
-      "🟡 Possible AWS Issue (unconfirmed)",
-      `DownDetector reports an issue but AWS's own status page doesn't show anything yet.\n\nDownDetector: ${currentStatus}\n${DOWNDETECTOR_URL}`,
-      "default"
-    );
-  } else if (!isConfirmedProblem && wasConfirmedProblem) {
-    await sendNtfy(
-      "✅ AWS Status Back to Normal",
-      "Both DownDetector and AWS's status feed look normal again.",
-      "default"
-    );
-  }
+    const { problem: awsProblem, items: awsItems } = await fetchAwsRssRecentIssues(60);
 
-  const history = [
-    ...(prev?.history ?? []),
-    {
-      time: new Date().toISOString(),
+    const wasConfirmedProblem = prev?.confirmedProblem ?? false;
+    const isConfirmedProblem = ddProblem && awsProblem;
+
+    // Alert only once when parsing starts failing, not every 5 minutes.
+    if (parseFailed && !wasParseFailed) {
+      await sendAlert(
+        "⚠️ DownDetector Selector Hatası",
+        `DownDetector sayfası artık mevcut selector'larla parse edilemiyor. Sayfa yapısı değişmiş olabilir, check-status.mts içindeki selectorCandidates listesini güncellemen gerekebilir.\n\n${DOWNDETECTOR_URL}`,
+        "high"
+      );
+    } else if (!parseFailed && wasParseFailed) {
+      await sendAlert("✅ Selector Sorunu Düzeldi", "DownDetector sayfası tekrar başarıyla parse ediliyor.");
+    }
+
+    if (isConfirmedProblem && !wasConfirmedProblem) {
+      await sendAlert(
+        "🔴 AWS Outage Confirmed",
+        `DownDetector AND AWS's own status feed both indicate a problem.\n\nDownDetector: ${currentStatus}\n\nAWS RSS:\n${awsItems
+          .slice(0, 5)
+          .join("\n")}\n\n${DOWNDETECTOR_URL}`,
+        "urgent"
+      );
+    } else if (ddProblem && !awsProblem && !wasConfirmedProblem) {
+      await sendAlert(
+        "🟡 Possible AWS Issue (unconfirmed)",
+        `DownDetector reports an issue but AWS's own status page doesn't show anything yet.\n\nDownDetector: ${currentStatus}\n${DOWNDETECTOR_URL}`,
+        "default"
+      );
+    } else if (!isConfirmedProblem && wasConfirmedProblem) {
+      await sendAlert(
+        "✅ AWS Status Back to Normal",
+        "Both DownDetector and AWS's status feed look normal again."
+      );
+    }
+
+    const history = [
+      ...(prev?.history ?? []),
+      {
+        time: new Date().toISOString(),
+        ddProblem,
+        awsProblem,
+        confirmedProblem: isConfirmedProblem,
+      },
+    ].slice(-HISTORY_MAX);
+
+    const newState: StatusState = {
+      status: currentStatus,
       ddProblem,
       awsProblem,
       confirmedProblem: isConfirmedProblem,
-    },
-  ].slice(-HISTORY_MAX);
+      parseFailed,
+      awsItems,
+      history,
+      lastChecked: new Date().toISOString(),
+    };
 
-  const newState: StatusState = {
-    status: currentStatus,
-    ddProblem,
-    awsProblem,
-    confirmedProblem: isConfirmedProblem,
-    awsItems,
-    history,
-    lastChecked: new Date().toISOString(),
-  };
+    await store.setJSON("state", newState);
 
-  await store.setJSON("state", newState);
-
-  return new Response("ok");
+    return new Response("ok");
+  } catch (err) {
+    // Network failure, DownDetector/AWS unreachable, or an unexpected bug.
+    // Don't let this fail silently - alert so we know the checker itself is broken.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("check-status failed:", err);
+    await sendAlert(
+      "🚨 AWS Status Checker Crashed",
+      `check-status fonksiyonu çalışırken hata aldı:\n\n${message}`,
+      "urgent"
+    );
+    return new Response("error", { status: 500 });
+  }
 };
 
 // Runs every 5 minutes. Netlify accepts standard 5-field cron syntax.

@@ -33,6 +33,24 @@ const NTFY_TOPIC = "aws-alerts-letanom-kevino007";
 ```
 Telefonunda ntfy uygulamasında bu topic'e abone olduğundan emin ol.
 
+### 4.5) Google Chat webhook'unu ekle
+`check-status.mts` artık bir de Google Chat space'ine alert atıyor
+(selector parse hatası, checker crash olursa, ve AWS durum değişikliklerinde).
+Webhook URL'i **koda yazma** — içinde gizli bir `key` ve `token` var, repo
+public olduğu için herkes görebilir. Onun yerine Netlify environment
+variable olarak ekle:
+
+1. Netlify dashboard → Site configuration → Environment variables → "Add a variable"
+2. Key: `GOOGLE_CHAT_WEBHOOK_URL`
+3. Value: Google Chat'te "Apps & integrations" → "Webhooks" üzerinden aldığın tam URL
+   (`https://chat.googleapis.com/v1/spaces/.../messages?key=...&token=...` formatında)
+4. Kaydet ve siteyi yeniden deploy et (env var değişiklikleri yeni deploy ister)
+
+Yerelde test edeceksen `netlify link` sonrası:
+```bash
+netlify env:set GOOGLE_CHAT_WEBHOOK_URL "https://chat.googleapis.com/v1/spaces/AAA.../messages?key=...&token=..."
+```
+
 ### 5) Test et
 Deploy bittikten sonra:
 - Panel: `https://SITEN.netlify.app/`
@@ -75,7 +93,14 @@ public/index.html                   -> canlı panel (client-side fetch ile günc
 ```
 
 ## Notlar
-- DownDetector'ın HTML yapısı değişirse `check-status.mts` içindeki
-  `selectorCandidates` listesini güncellemen gerekebilir.
+- DownDetector CSS class isimlerini otomatik/hash'li üretiyor, bu yüzden
+  `selectorCandidates` listesi zaman zaman kırılabilir. Artık bu durumda
+  (status "UNKNOWN - could not parse page" olduğunda) sessizce geçmiyor,
+  hem ntfy hem Google Chat'e bir kere alert atıyor (her 5 dakikada tekrar
+  spam yapmıyor, sadece durum değiştiğinde). Alert gelirse canlı sayfayı
+  inceleyip `selectorCandidates`'i güncellemen gerekir.
+- Checker fonksiyonu bir istisna/network hatasıyla tamamen çökerse de artık
+  bir "🚨 AWS Status Checker Crashed" alert'i geliyor — önceden bu tamamen
+  sessiz kalıyordu.
 - Netlify'ın ücretsiz planında Scheduled Functions kullanılabilir; kullanım
   limitlerini Netlify'ın güncel fiyatlandırma sayfasından kontrol et.
