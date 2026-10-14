@@ -81,6 +81,11 @@ test("ön yüz: aktif kesinti varken eksiksiz çizilir", async () => {
     assert.ok(doc.querySelectorAll("#ptable tbody tr").length === 3, "3 sonda bölgesi");
     assert.match(doc.title, /🔴/);
     assert.ok(doc.querySelectorAll("#chips li").length === 3);
+    // Türkçe arayüzde AWS başlıkları çevrilir, "sonda" kelimesi geçmez
+    assert.match(doc.querySelector("#active-list .inc-title").textContent, /^Servis kesintisi: Artan hata oranları$/);
+    assert.equal(doc.querySelector("#probes-title").textContent, "Canlı erişim testleri");
+    assert.doesNotMatch(doc.body.textContent, /sonda/i);
+    assert.match(doc.querySelector("#about-body").textContent, /İngilizcedir/);
   } finally {
     close();
   }
@@ -108,6 +113,8 @@ test("ön yüz: dil değişimi, izleme listesi kapsamı ve sunucu hatası", asyn
     doc.querySelector("#btn-lang").click();
     assert.equal(doc.documentElement.lang, "en");
     assert.match(doc.querySelector("#verdict-title").textContent, /outage/i);
+    assert.match(doc.querySelector("#active-list .inc-title").textContent, /^Service disruption: Increased Error Rates$/);
+    assert.doesNotMatch(doc.querySelector("#about-body").textContent, /İngilizcedir/);
 
     // Sadece us-east-1 izlenirse eu-central-1'deki kesinti görünmemeli
     const regionBox = [...doc.querySelectorAll("#pick-regions-panel input")].find((_, i) => i === 0);

@@ -1,6 +1,6 @@
 # AWS Durum Paneli
 
-AWS'nin resmi durum akışını, canlı bölge sondalarını ve kullanıcı raporlarını (DownDetector) karşılaştırıp tek bir karar üreten bağımsız durum paneli. Netlify üzerinde çalışır, sunucu yönetmen gerekmez.
+AWS'nin resmi durum akışını, canlı bölge erişim testlerini ve kullanıcı raporlarını (DownDetector) karşılaştırıp tek bir karar üreten bağımsız durum paneli. Netlify üzerinde çalışır, sunucu yönetmen gerekmez.
 
 ## Ne yapar
 
@@ -8,7 +8,7 @@ AWS'nin resmi durum akışını, canlı bölge sondalarını ve kullanıcı rapo
 - **Bölge ve servis tablosu:** Hangi servisin hangi bölgede etkilendiği tek bakışta görünür. Hücreye tıklayınca olaylar süzülür.
 - **İzleme listesi:** Sadece kendi bölge ve servislerini seç. Seçim bağlantıya yansır (`?r=eu-central-1&s=eks,rds&mine=1`), paylaşılabilir.
 - **Olaylar ve geçmiş:** Aynı olayın güncellemeleri tek kayıtta toplanır. Arama ve süzme vardır.
-- **Canlı sondalar:** Her kontrolde AWS uç noktalarına gerçek istek atılır, gecikme ve hata ölçülür.
+- **Canlı erişim testleri:** Her kontrolde AWS uç noktalarına gerçek istek atılır, gecikme ve hata ölçülür.
 - **Son 24 saat grafiği ve 90 günlük çubuklar.**
 - **"Veri nereden geliyor, ne kadar güvenilir?" bölümü:** Her kaynağın ne ölçtüğü, nasıl çekildiği, ne sıklıkta güncellendiği, sınırı ve şu anki durumu yazar.
 - **Bildirim:** ntfy, Google Chat ya da genel webhook. Tarayıcı bildirimi de açılabilir.
@@ -19,11 +19,11 @@ AWS'nin resmi durum akışını, canlı bölge sondalarını ve kullanıcı rapo
 | Kaynak | Güven | Neden |
 |---|---|---|
 | AWS resmi durum akışı | Yüksek | AWS'nin kendi bildirimi. Bazen geç gelir. |
-| Canlı sondalar | Orta-yüksek | Gerçek istek. Ama Netlify sunucusundan ölçer, senin ağından değil. |
+| Canlı erişim testleri | Orta-yüksek | Gerçek istek. Ama Netlify sunucusundan ölçer, senin ağından değil. |
 | DownDetector | Düşük | Kalabalık raporu. Tek başına en fazla "Dikkat" üretir. |
 
-- Tek başarısız sonda gürültü sayılır. Art arda **iki** kontrolde başarısız olursa sorun kabul edilir.
-- Bütün sondalar aynı anda başarısız olursa suç bizim çıkış ağımızdadır: bölge bildirimi gönderilmez, en fazla "Dikkat" gösterilir.
+- Tek başarısız erişim testi gürültü sayılır. Art arda **iki** kontrolde başarısız olursa sorun kabul edilir.
+- Bütün erişim testleri aynı anda başarısız olursa suç bizim çıkış ağımızdadır: bölge bildirimi gönderilmez, en fazla "Dikkat" gösterilir.
 - AWS akışı okunamazsa sayfa yeşil göstermez, "Doğrulanamıyor" der.
 - İlk çalıştırmada mevcut olaylar için bildirim gönderilmez.
 - Bir olay için yalnızca ilk görülme, kötüleşme ve çözülmede bildirim gider. Hiçbir kanala ulaşılamazsa bir sonraki kontrolde yeniden denenir.
@@ -49,7 +49,7 @@ npx netlify dev   # yerel geliştirme (zamanlama kendiliğinden tetiklenmez)
 npx netlify functions:invoke check-status   # kontrolü elle çalıştır
 ```
 
-Testler gerçek ağa çıkmaz. AWS akışı, sondalar ve DownDetector sahte yanıtlarla denenir. Ön yüz jsdom içinde gerçek bir snapshot ile çizdirilir.
+Testler gerçek ağa çıkmaz. AWS akışı, erişim testleri ve DownDetector sahte yanıtlarla denenir. Ön yüz jsdom içinde gerçek bir snapshot ile çizdirilir.
 
 ## Uç noktalar
 
@@ -62,7 +62,7 @@ Testler gerçek ağa çıkmaz. AWS akışı, sondalar ve DownDetector sahte yan�
 netlify/functions/check-status.mts   zamanlanmış kontrol (her 5 dk)
 netlify/functions/get-status.mts     /api/status ve /api/health
 netlify/lib/aws.ts                   RSS çözümleme, olay gruplama
-netlify/lib/probes.ts                canlı sondalar
+netlify/lib/probes.ts                canlı erişim testleri
 netlify/lib/downdetector.ts          DownDetector okuma
 netlify/lib/status.ts                çapraz doğrulama ve genel karar
 netlify/lib/alerts.ts                hangi bildirimlerin gideceği

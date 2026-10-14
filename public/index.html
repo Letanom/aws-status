@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AWS Durum Paneli</title>
-  <meta name="description" content="AWS'nin resmi durum akışı, canlı sondalar ve topluluk raporlarını karşılaştıran bağımsız durum paneli.">
+  <meta name="description" content="AWS'nin resmi durum akışı, canlı erişim testleri ve topluluk raporlarını karşılaştıran bağımsız durum paneli.">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" id="favicon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
       </a>
       <nav class="nav" aria-label="Bölümler">
         <a href="#board" data-i18n="nav_board">Tablo</a>
-        <a href="#probes" data-i18n="nav_probes">Sondalar</a>
+        <a href="#probes" data-i18n="nav_probes">Erişim testleri</a>
         <a href="#history" data-i18n="nav_history">Geçmiş</a>
         <a href="#about" data-i18n="nav_about">Veri ve güvenilirlik</a>
       </nav>
@@ -96,14 +96,14 @@
       <section id="trend" class="sec" aria-labelledby="trend-title">
         <div class="sec-head">
           <h2 id="trend-title" data-i18n="trend_title">Son 24 saat</h2>
-          <p class="sec-desc" data-i18n="trend_desc">Sağlıklı sondaların medyan gecikmesi. Renkli bantlar sorunlu dönemleri gösterir.</p>
+          <p class="sec-desc" data-i18n="trend_desc">Başarılı erişim testlerinin medyan gecikmesi. Renkli bantlar sorunlu dönemleri gösterir.</p>
         </div>
         <div id="trend-chart" class="trend"></div>
       </section>
 
       <section id="probes" class="sec" aria-labelledby="probes-title">
         <div class="sec-head">
-          <h2 id="probes-title" data-i18n="probes_title">Canlı sondalar</h2>
+          <h2 id="probes-title" data-i18n="probes_title">Canlı erişim testleri</h2>
           <p class="sec-desc" data-i18n="probes_desc">Her kontrol turunda AWS uç noktalarına gerçek bir istek atılır.</p>
         </div>
         <div class="table-scroll"><table class="ptable" id="ptable"></table></div>

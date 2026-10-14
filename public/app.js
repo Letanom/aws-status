@@ -15,7 +15,7 @@
   const I18N = {
     tr: {
       skip: "İçeriğe geç", brand: "AWS Durum Paneli",
-      nav_board: "Tablo", nav_probes: "Sondalar", nav_history: "Geçmiş", nav_about: "Veri ve güvenilirlik",
+      nav_board: "Tablo", nav_probes: "Erişim testleri", nav_history: "Geçmiş", nav_about: "Veri ve güvenilirlik",
       theme_auto: "Tema: otomatik", theme_light: "Tema: açık", theme_dark: "Tema: koyu",
       notify_off: "Bildirim", notify_on: "Bildirim açık", notify_denied: "Bildirim engelli", notify_unsupported: "Bildirim yok",
       refresh: "Yenile", refreshing: "Yenileniyor…",
@@ -32,11 +32,11 @@
       loading_title: "Veriler yükleniyor…", nodata_title: "Henüz veri yok.",
       nodata_sub: "İlk kontrol turu tamamlanınca burada görünür. Birkaç dakika sürebilir, sayfa kendiliğinden yenilenir.",
       chip_aws_ok: "AWS durum akışı çalışıyor ({ms} ms)", chip_aws_err: "AWS durum akışı okunamadı",
-      chip_probe: "{ok}/{total} sonda yanıt verdi", chip_probe_none: "Sondalar kapalı",
+      chip_probe: "{ok}/{total} erişim testi başarılı", chip_probe_none: "Erişim testleri kapalı",
       chip_dd_ok: "DownDetector sorun bildirmiyor", chip_dd_possible: "DownDetector olası sorun gösteriyor",
       chip_dd_problem: "DownDetector'da sorun raporları var", chip_dd_unknown: "DownDetector okunamadı", chip_dd_off: "DownDetector kapalı",
       reason_incident: "{svc}, {region}: {title}",
-      reason_probe: "{region} bölgesinde sondalar art arda iki kontrolde yanıt vermedi ({n}).",
+      reason_probe: "{region} bölgesinde erişim testleri art arda iki kontrolde başarısız oldu ({n}).",
       reason_dd_un: "DownDetector'da kullanıcılar sorun bildiriyor, ancak AWS henüz doğrulamadı.",
       reason_dd_ok: "DownDetector'daki kullanıcı raporları AWS'nin bildirimini destekliyor.",
       reason_feed: "AWS durum akışı okunamadı, resmi bildirimler kontrol edilemiyor.",
@@ -48,16 +48,16 @@
       multi_row: "Birden fazla servis", global: "Global",
       sel_label: "Süzülen: {what}", sel_clear: "Süzmeyi kaldır",
       legend_ok: "Sorun bildirilmedi", legend_info: "Dikkat", legend_degraded: "Performans sorunu", legend_disruption: "Kesinti",
-      tip_ok: "AWS bu serviste olay bildirmedi.", tip_probe: "Sonda: {ms} ms", tip_probe_fail: "Sonda yanıt vermedi", tip_probe_slow: "Sonda yavaş: {ms} ms",
+      tip_ok: "AWS bu serviste olay bildirmedi.", tip_probe: "Erişim testi: {ms} ms", tip_probe_fail: "Erişim testi başarısız", tip_probe_slow: "Erişim testi yavaş: {ms} ms",
       active_title: "Açık olaylar", active_empty: "Şu anda açık olay yok.",
       active_empty_sub: "Son 30 günde {n} olay kayıtlı.", active_empty_sub0: "Son 30 günde kayıtlı olay yok.",
       no_match: "Bu süzmeyle eşleşen açık olay yok.",
       started: "{ago} başladı", last_upd: "son güncelleme {ago}", upd_n: "Güncellemeler ({n})",
-      trend_title: "Son 24 saat", trend_desc: "Sağlıklı sondaların medyan gecikmesi. Renkli bantlar sorunlu dönemleri gösterir.",
+      trend_title: "Son 24 saat", trend_desc: "Başarılı erişim testlerinin medyan gecikmesi. Renkli bantlar sorunlu dönemleri gösterir.",
       trend_empty: "Grafik için henüz yeterli veri yok. Kontroller 5 dakikada bir eklenir.",
-      probes_title: "Canlı sondalar", probes_desc: "Her kontrol turunda AWS uç noktalarına gerçek bir istek atılır.",
+      probes_title: "Canlı erişim testleri", probes_desc: "Her kontrol turunda AWS uç noktalarına gerçek bir istek atılır.",
       probes_note: "Ölçümler sunucu tarafından yapılır, sizin ağınızdaki gecikmeyi yansıtmaz.",
-      p_region: "Bölge", p_trend: "Son 3 saat", p_fail: "yanıt yok", p_slow: "yavaş", p_none: "Sonda ayarlanmamış.",
+      p_region: "Bölge", p_trend: "Son 3 saat", p_fail: "yanıt yok", p_slow: "yavaş", p_none: "Erişim testi ayarlanmamış.",
       uptime_title: "Son 90 gün", uptime_sum: "İzlenen sürenin %{pct} kadarında sorun yoktu.", uptime_sum_none: "Henüz yeterli veri yok.",
       uptime_since: "İzleme {date} tarihinde başladı. Öncesi gri gösterilir.",
       day_tip: "{date}: {n} kontrol, {bad} sorunlu", day_none: "{date}: veri yok",
@@ -77,12 +77,12 @@
       src1_when: "Her {n} dakikada bir.",
       src1_limit: "AWS bir olayı bazen dakikalar, bazen saatler sonra bildirir, bu yüzden tek başına “sorun yok” demek için yeterli değildir. Hesabınıza özel olaylar için AWS Health API gerekir.",
       src1_now: "{ms} ms, {items} kayıt okundu, son okuma {ago}.", src1_now_err: "Okunamadı: {err}",
-      src2_name: "Canlı sondalar", src2_sub: "Gerçek istekle ölçülen erişilebilirlik",
+      src2_name: "Canlı erişim testleri", src2_sub: "Gerçek istekle ölçülen erişilebilirlik",
       src2_what: "AWS uç noktalarının ayakta olup olmadığı ve ne kadar hızlı yanıt verdiği.",
       src2_how: "{regions} bölgedeki {services} servisine ({total} uç nokta) herkese açık adreslerden bir GET isteği atılır. 5xx yanıt ya da {timeout} sn içinde yanıt gelmemesi hata sayılır, hata olursa bir kez daha denenir. Art arda iki turda hata alınırsa sorun sayılır.",
       src2_when: "Her {n} dakikada bir.",
-      src2_limit: "Ölçüm tek bir noktadan (Netlify sunucusu) yapılır ve uç noktayı ölçer, bölgenin tamamını değil. Bütün sondalar aynı anda başarısız olursa suçlu büyük ihtimalle bizim ağımızdır, bu yüzden en fazla “Dikkat” verilir.",
-      src2_now: "{ok}/{total} sonda yanıt verdi, medyan gecikme {ms} ms.", src2_now_none: "Sonda ayarlanmamış.",
+      src2_limit: "Ölçüm tek bir noktadan (Netlify sunucusu) yapılır ve uç noktayı ölçer, bölgenin tamamını değil. Bütün erişim testleri aynı anda başarısız olursa suçlu büyük ihtimalle bizim ağımızdır, bu yüzden en fazla “Dikkat” verilir.",
+      src2_now: "{ok}/{total} erişim testi başarılı, medyan gecikme {ms} ms.", src2_now_none: "Erişim testi ayarlanmamış.",
       src3_name: "DownDetector", src3_sub: "Kullanıcıların bildirdiği sorunlar",
       src3_what: "Kullanıcıların AWS ile ilgili sorun bildirimlerindeki ani artış.",
       src3_how: "Sunucu <code>{url}</code> sayfasının metnini okur ve “sorun yok”, “olası sorun” ya da “sorun var” olarak yorumlar.",
@@ -91,8 +91,8 @@
       src3_now_ok: "Kullanıcılar sorun bildirmiyor.", src3_now_possible: "Olası sorun görünüyor.", src3_now_problem: "Sorun raporları var.",
       src3_now_unknown: "Sayfa okunamadı, yok sayılıyor.", src3_now_off: "Kapalı.",
       levels_title: "Karar nasıl veriliyor?",
-      lv_ok: "AWS aktif olay bildirmedi, sondalar sağlıklı.",
-      lv_info: "Bilgilendirme mesajı var, ya da yalnızca DownDetector sorun gösteriyor, ya da bütün sondalar aynı anda başarısız oldu.",
+      lv_ok: "AWS aktif olay bildirmedi, erişim testleri başarılı.",
+      lv_info: "Bilgilendirme mesajı var, ya da yalnızca DownDetector sorun gösteriyor, ya da bütün erişim testleri aynı anda başarısız oldu.",
       lv_degraded: "AWS performans düşüşü bildirdi, ya da bir uç nokta art arda iki turda yanıt vermedi.",
       lv_disruption: "AWS kesinti bildirdi.",
       lv_unknown: "AWS akışı okunamıyor ve başka sinyal yok. Yeşil gösterilmez.",
@@ -101,7 +101,8 @@
       lim2: "<strong>Açık olay süresi {h} saattir.</strong> Bu süreden eski ve kapatılmamış olaylar “güncelleme yok” olarak ayrı gösterilir, genel durumu etkilemez.",
       lim3: "<strong>Geçmiş izleme başladığında başlar.</strong> Daha eski olaylar yalnızca AWS akışında hâlâ duruyorsa görünür.",
       lim4: "<strong>Veri eskirse sayfa sizi uyarır.</strong> Arka plan kontrolü 15 dakikadan uzun süre çalışmazsa üstte uyarı çıkar. Dış izleme için <code>/api/health</code> adresi kullanılabilir.",
-      foot_text: "Veri: AWS durum akışı, canlı sondalar ve DownDetector. Bağımsız bir projedir, AWS ile bağlantısı yoktur.",
+      lim5: "<strong>Olay ayrıntıları İngilizcedir.</strong> AWS güncellemelerini yalnızca İngilizce yayımlar. Başlıkları Türkçeye çeviriyoruz, güncelleme metinleri AWS’nin yazdığı gibi kalır.",
+      foot_text: "Veri: AWS durum akışı, canlı erişim testleri ve DownDetector. Bağımsız bir projedir, AWS ile bağlantısı yoktur.",
       foot_json: "JSON verisi", foot_health: "Sağlık kontrolü", foot_src: "Kaynak kodu",
       notif_title: "AWS durumu değişti",
     },
@@ -280,6 +281,39 @@
   const fmtTime = (ts) => new Intl.DateTimeFormat(loc(), { hour: "2-digit", minute: "2-digit" }).format(ts);
   const fmtDate = (ts) => new Intl.DateTimeFormat(loc(), { dateStyle: "medium", timeZone: "UTC" }).format(ts);
 
+
+  /* ------------------------------------------------------------------ AWS başlıklarını Türkçeye çevirme */
+  // AWS başlıkları kalıplıdır. Bilinen kalıplar çevrilir, bilinmeyen kısımlar olduğu gibi kalır.
+  const TITLE_PREFIX_TR = [
+    [/^Service disruption:\s*/i, "Servis kesintisi: "],
+    [/^Service degradation:\s*/i, "Performans sorunu: "],
+    [/^Service impact:\s*/i, "Servis etkisi: "],
+    [/^Informational message:\s*/i, "Bilgilendirme: "],
+    [/^Service is operating normally:\s*/i, "Servis normale döndü: "],
+    [/\[RESOLVED\]\s*/i, "[Çözüldü] "],
+  ];
+  const TITLE_PHRASE_TR = [
+    [/Increased API Error Rates/i, "Artan API hata oranları"],
+    [/Increased Connectivity Issues/i, "Artan bağlantı sorunları"],
+    [/Increased Provisioning Times/i, "Artan hazırlama süreleri"],
+    [/Increased Error Rates/i, "Artan hata oranları"],
+    [/Elevated Error Rates/i, "Yükselen hata oranları"],
+    [/Increased Latenc(?:y|ies)/i, "Artan gecikmeler"],
+    [/Elevated Latenc(?:y|ies)/i, "Yükselen gecikmeler"],
+    [/Delayed (?:Cluster|Instance) Creation/i, "Gecikmeli oluşturma"],
+    [/Connectivity Issues/i, "Bağlantı sorunları"],
+    [/API Error Rates/i, "API hata oranları"],
+    [/Increased Errors/i, "Artan hatalar"],
+  ];
+  function trTitle(title) {
+    if (state.lang !== "tr" || !title) return title;
+    let out = title, hit = false;
+    for (const [re, to] of TITLE_PREFIX_TR) if (re.test(out)) { out = out.replace(re, to); hit = true; }
+    for (const [re, to] of TITLE_PHRASE_TR) if (re.test(out)) { out = out.replace(re, to); hit = true; }
+    if (hit) out = out.replace(/\s+and\s+/gi, " ve ").replace(/\s+/g, " ").trim();
+    return out;
+  }
+
   /* ------------------------------------------------------------------ kapsam (izleme listesi) */
   const scopeOn = () => state.mine && (state.watchR.size > 0 || state.watchS.size > 0);
   const inR = (r) => !scopeOn() || state.watchR.size === 0 || r === "global" || state.watchR.has(r);
@@ -426,7 +460,7 @@
     if (r.code === "incident") {
       const inc = d.incidents.find((i) => i.id === r.incidentId);
       return h("li", { "data-l": inc ? inc.severity : "degraded" },
-        t("reason_incident", { svc: sLabel(r.service || "multi"), region: rLabel(r.region), title: inc ? inc.title : "" }));
+        t("reason_incident", { svc: sLabel(r.service || "multi"), region: rLabel(r.region), title: inc ? trTitle(inc.title) : "" }));
     }
     if (r.code === "probe") return h("li", { "data-l": "degraded" }, t("reason_probe", { region: rLabel(r.region), n: r.n ?? 1 }));
     if (r.code === "downdetector_unconfirmed") return h("li", { "data-l": "info" }, t("reason_dd_un"));
@@ -550,7 +584,7 @@
     const lvl = cell ? cell.level : "ok";
     const nodes = [h("strong", null, `${sLabel(svc)}, ${rLabel(region)}`), t(`level_${lvl}`)];
     if (!cell || (!cell.incidents.length && lvl === "ok")) nodes.push(h("div", null, t("tip_ok")));
-    for (const i of cell?.incidents ?? []) nodes.push(h("div", null, i.title));
+    for (const i of cell?.incidents ?? []) nodes.push(h("div", null, trTitle(i.title)));
     for (const p of cell?.probes ?? []) {
       nodes.push(h("div", null, !p.ok ? t("tip_probe_fail") : p.slow ? t("tip_probe_slow", { ms: p.ms }) : t("tip_probe", { ms: p.ms })));
     }
@@ -570,7 +604,7 @@
 
   function timeline(inc) {
     return h("ol", { class: "timeline" },
-      ...[...inc.updates].reverse().map((u) => h("li", null, h("time", null, fmtDT(u.ts)), h("p", null, u.text || u.title))));
+      ...[...inc.updates].reverse().map((u) => h("li", null, h("time", null, fmtDT(u.ts)), h("p", null, u.text || trTitle(u.title)))));
   }
   function renderActive() {
     const d = state.data;
@@ -588,7 +622,7 @@
     root.replaceChildren(...list.map((inc) =>
       h("article", { class: "inc", "data-l": inc.severity },
         sevTag(inc.severity),
-        h("h3", { class: "inc-title" }, inc.title),
+        h("h3", { class: "inc-title" }, trTitle(inc.title)),
         h("p", { class: "inc-meta" }, `${incSvcs(inc).map(sLabel).join(", ")}, ${rLabel(inc.region)}`),
         h("p", { class: "inc-time" }, `${t("started", { ago: ago(inc.firstTs) })}, ${t("last_upd", { ago: ago(inc.lastTs) })}`),
         h("details", null, h("summary", null, t("upd_n", { n: inc.updates.length })), timeline(inc)))));
@@ -612,7 +646,7 @@
       if (state.fStatus !== "all" && i.status !== state.fStatus) return false;
       if (state.fSev !== "all" && i.peak !== state.fSev) return false;
       if (!q) return true;
-      const hay = `${i.title} ${i.region} ${rName(i.region)} ${incSvcs(i).map(sLabel).join(" ")} ${i.updates.map((u) => u.text).join(" ")}`.toLowerCase();
+      const hay = `${i.title} ${trTitle(i.title)} ${i.region} ${rName(i.region)} ${incSvcs(i).map(sLabel).join(" ")} ${i.updates.map((u) => u.text).join(" ")}`.toLowerCase();
       return hay.includes(q);
     });
     if (!list.length) { root.replaceChildren(h("div", { class: "empty", style: "padding:18px 0" }, t("hist_empty"))); more.hidden = true; return; }
@@ -627,7 +661,7 @@
       return h("details", { class: "h", "data-l": lvl },
         h("summary", null,
           sevTag(lvl === "ok" ? "ok" : lvl),
-          h("span", { class: "h-title" }, inc.title),
+          h("span", { class: "h-title" }, trTitle(inc.title)),
           h("span", { class: "h-dur" }, durText),
           h("span", { class: "h-meta" }, `${incSvcs(inc).map(sLabel).join(", ")}, ${rLabel(inc.region)}, ${fmtDT(inc.firstTs)}${inc.peak !== "ok" && inc.status === "resolved" ? `, ${t("peak", { level: t(`level_${inc.peak}`) })}` : ""}`)),
         timeline(inc));
@@ -797,7 +831,8 @@
       h("li", { "data-l": l }, sevTag(l), h("span", null, t(`lv_${l}`)))));
     const limits = h("ul", { class: "limits" },
       h("li", null, rich(t("lim1"))), h("li", null, rich(t("lim2", { h: m.activeHours }))),
-      h("li", null, rich(t("lim3"))), h("li", null, rich(t("lim4"))));
+      h("li", null, rich(t("lim3"))), h("li", null, rich(t("lim4"))),
+      state.lang === "tr" ? h("li", null, rich(t("lim5"))) : null);
 
     root.replaceChildren(facts, ...sources, h("h3", { class: "sub" }, t("levels_title")), levels, h("h3", { class: "sub" }, t("limits_title")), limits);
   }
