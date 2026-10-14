@@ -1,13 +1,25 @@
 {
   "name": "aws-status-netlify",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "private": true,
   "type": "module",
-  "description": "AWS status dashboard: DownDetector + AWS RSS cross-check, runs on Netlify Scheduled Functions every 5 minutes.",
+  "description": "AWS durum paneli: resmi AWS RSS, canlı bölge sondaları ve DownDetector sinyalini çapraz doğrular. Netlify Scheduled Functions ile her 5 dakikada bir çalışır.",
+  "scripts": {
+    "dev": "netlify dev",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
   "dependencies": {
     "@netlify/blobs": "^8.1.0",
     "cheerio": "^1.0.0"
   },
   "devDependencies": {
-    "@netlify/functions": "^2.8.2"
+    "@netlify/functions": "^2.8.2",
+    "@types/node": "^22.0.0",
+    "jsdom": "^25.0.0",
+    "typescript": "^5.6.0"
   }
 }

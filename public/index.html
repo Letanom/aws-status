@@ -1,181 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AWS Durum Paneli</title>
-<style>
-  :root {
-    --bg: #0B1220;
-    --panel: #121B2E;
-    --panel-border: #1F2C45;
-    --text: #E6EDF7;
-    --muted: #8B96A8;
-    --up: #3DDC84;
-    --warn: #F5A623;
-    --down: #FF5C5C;
-    --accent: #4C7FFF;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 40px 20px;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-    display: flex;
-    justify-content: center;
-  }
-  .wrap { width: 100%; max-width: 760px; }
-  .eyebrow {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  h1 { font-size: 28px; margin: 0 0 28px 0; font-weight: 700; }
-  .status-card {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 14px;
-    padding: 28px;
-    margin-bottom: 20px;
-  }
-  .status-row { display: flex; align-items: center; gap: 16px; }
-  .dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; position: relative; }
-  .dot.up { background: var(--up); animation: pulse-up 2s infinite; }
-  .dot.warn { background: var(--warn); animation: pulse-warn 1.4s infinite; }
-  .dot.down { background: var(--down); animation: pulse-down 1s infinite; }
-  @keyframes pulse-up { 0% { box-shadow: 0 0 0 0 rgba(61,220,132,0.45); } 100% { box-shadow: 0 0 0 12px rgba(61,220,132,0); } }
-  @keyframes pulse-warn { 0% { box-shadow: 0 0 0 0 rgba(245,166,35,0.45); } 100% { box-shadow: 0 0 0 12px rgba(245,166,35,0); } }
-  @keyframes pulse-down { 0% { box-shadow: 0 0 0 0 rgba(255,92,92,0.45); } 100% { box-shadow: 0 0 0 12px rgba(255,92,92,0); } }
-  .status-text { font-size: 22px; font-weight: 700; }
-  .status-text.up { color: var(--up); }
-  .status-text.warn { color: var(--warn); }
-  .status-text.down { color: var(--down); }
-  .timestamp { font-family: 'IBM Plex Mono', 'Courier New', monospace; font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 14px; padding: 20px; }
-  .card h3 { margin: 0 0 12px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
-  .pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; font-family: 'IBM Plex Mono', monospace; }
-  .pill.up { background: rgba(61,220,132,0.15); color: var(--up); }
-  .pill.down { background: rgba(255,92,92,0.15); color: var(--down); }
-  .card p.detail { margin: 12px 0 0 0; font-size: 14px; color: var(--text); line-height: 1.5; }
-  .rss-list { margin: 12px 0 0 0; padding-left: 18px; font-size: 13px; color: var(--text); line-height: 1.7; }
-  .muted { color: var(--muted); font-size: 13px; margin: 12px 0 0 0; }
-  .history-card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 14px; padding: 20px; }
-  .history-card h3 { margin: 0 0 4px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
-  .history-sub { font-size: 12px; color: var(--muted); margin: 0 0 16px 0; }
-  .pulse-strip { display: flex; align-items: flex-end; gap: 3px; height: 40px; }
-  .tick { flex: 1; height: 100%; border-radius: 3px; min-width: 4px; }
-  .tick.up { background: var(--up); opacity: 0.85; }
-  .tick.warn { background: var(--warn); opacity: 0.9; }
-  .tick.down { background: var(--down); }
-  .footer { margin-top: 24px; font-size: 12px; color: var(--muted); text-align: center; font-family: 'IBM Plex Mono', monospace; }
-  .footer a { color: var(--accent); text-decoration: none; }
-  .loading { color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWS Durum Paneli</title>
+  <meta name="description" content="AWS'nin resmi durum akışı, canlı sondalar ve topluluk raporlarını karşılaştıran bağımsız durum paneli.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" id="favicon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("aws-status:theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
-<div class="wrap">
-  <div class="eyebrow">Otomatik İzleme &middot; Her 5 Dakikada Bir Güncellenir</div>
-  <h1>AWS Durum Paneli</h1>
-  <div id="app"><p class="loading">Yükleniyor…</p></div>
-  <div class="footer">
-    Kaynak: <a href="https://downdetector.com/status/amazon-aws/" target="_blank">DownDetector</a>
-    &middot;
-    <a href="https://status.aws.amazon.com/rss/all.rss" target="_blank">AWS Status RSS</a>
-    <br>Sayfa 60 saniyede bir otomatik yenilenir.
-  </div>
-</div>
+  <a class="skip" href="#verdict" data-i18n="skip">İçeriğe geç</a>
 
-<script>
-async function loadStatus() {
-  try {
-    const res = await fetch('/api/status', { cache: 'no-store' });
-    const data = await res.json();
-    render(data);
-  } catch (e) {
-    document.getElementById('app').innerHTML =
-      '<p class="loading">Veri alınamadı, birkaç saniye sonra tekrar denenecek…</p>';
-  }
-}
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="brand" href="#verdict" aria-label="AWS Durum Paneli">
+        <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+          <rect x="1" y="1" width="30" height="30" rx="9" fill="var(--ink)"/>
+          <path d="M5 17h5l3-7 4 13 3-9 2 3h5" fill="none" stroke="var(--bg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-i18n="brand">AWS Durum Paneli</span>
+      </a>
+      <nav class="nav" aria-label="Bölümler">
+        <a href="#board" data-i18n="nav_board">Tablo</a>
+        <a href="#probes" data-i18n="nav_probes">Sondalar</a>
+        <a href="#history" data-i18n="nav_history">Geçmiş</a>
+        <a href="#about" data-i18n="nav_about">Veri ve güvenilirlik</a>
+      </nav>
+      <div class="tools">
+        <button class="tool" id="btn-lang" type="button" aria-label="Dil / Language"><span id="lang-label">EN</span></button>
+        <button class="tool" id="btn-theme" type="button" aria-label="Tema"><span id="theme-label">Otomatik</span></button>
+        <button class="tool" id="btn-notify" type="button" aria-pressed="false"><span id="notify-label">Bildirim</span></button>
+        <button class="tool tool-strong" id="btn-refresh" type="button"><span id="refresh-label">Yenile</span></button>
+      </div>
+    </div>
+  </header>
 
-function pill(isProblem) {
-  const cls = isProblem ? 'down' : 'up';
-  const text = isProblem ? 'Sorun bildirildi' : 'Normal';
-  return `<span class="pill ${cls}">${text}</span>`;
-}
+  <main id="main">
+    <div class="wrap">
+      <div id="banner" class="banner" role="status" hidden></div>
 
-function render(data) {
-  const history = data.history || [];
-  const dd = !!data.ddProblem;
-  const aws = !!data.awsProblem;
-  const confirmed = !!data.confirmedProblem;
-
-  let overallLabel, overallClass;
-  if (confirmed) { overallLabel = 'SORUN VAR'; overallClass = 'down'; }
-  else if (dd && !aws) { overallLabel = 'DOĞRULANMAMIŞ SİNYAL'; overallClass = 'warn'; }
-  else { overallLabel = 'HER ŞEY YOLUNDA'; overallClass = 'up'; }
-
-  const lastChecked = data.lastChecked
-    ? new Date(data.lastChecked).toLocaleString('tr-TR')
-    : 'Henüz kontrol edilmedi';
-
-  const awsItemsHtml = (data.awsItems && data.awsItems.length)
-    ? `<ul class="rss-list">${data.awsItems.slice(0, 5).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`
-    : `<p class="muted">Son 60 dakikada resmi AWS feed'inde yeni giriş yok.</p>`;
-
-  const ticks = history.length
-    ? history.map(h => {
-        const cls = h.confirmedProblem ? 'down' : (h.ddProblem ? 'warn' : 'up');
-        const t = new Date(h.time).toLocaleString('tr-TR');
-        const label = h.confirmedProblem ? 'SORUN' : (h.ddProblem ? 'Sinyal' : 'Normal');
-        return `<div class="tick ${cls}" title="${t} — ${label}"></div>`;
-      }).join('')
-    : '<p class="muted">Henüz geçmiş kayıt yok.</p>';
-
-  document.getElementById('app').innerHTML = `
-    <div class="status-card">
-      <div class="status-row">
-        <div class="dot ${overallClass}"></div>
-        <div>
-          <div class="status-text ${overallClass}">${overallLabel}</div>
-          <div class="timestamp">Son kontrol: ${lastChecked}</div>
+      <section id="verdict" class="verdict" aria-live="polite" aria-labelledby="verdict-title">
+        <div class="lamp" id="lamp" aria-hidden="true"></div>
+        <div class="verdict-body">
+          <h1 id="verdict-title" class="verdict-title">…</h1>
+          <p id="verdict-sub" class="verdict-sub"></p>
+          <ul id="reasons" class="reasons"></ul>
+          <ul id="chips" class="chips" aria-label="Kaynak durumları"></ul>
         </div>
-      </div>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <h3>DownDetector</h3>
-        ${pill(dd)}
-        <p class="detail">${escapeHtml(data.status || '-')}</p>
-      </div>
-      <div class="card">
-        <h3>AWS Resmi Durum Feed'i</h3>
-        ${pill(aws)}
-        ${awsItemsHtml}
-      </div>
-    </div>
-    <div class="history-card">
-      <h3>Geçmiş Kontroller</h3>
-      <p class="history-sub">En eski &rarr; en yeni (sağda). Her çubuk bir kontrolü temsil eder.</p>
-      <div class="pulse-strip">${ticks}</div>
-    </div>
-  `;
-}
+      </section>
 
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
+      <section id="watch" class="watch" aria-labelledby="watch-title">
+        <h2 id="watch-title" class="watch-title" data-i18n="f_title">İzleme listem</h2>
+        <div class="watch-controls">
+          <details class="pick" id="pick-regions"><summary id="pick-regions-sum"></summary><div class="pick-panel" id="pick-regions-panel"></div></details>
+          <details class="pick" id="pick-services"><summary id="pick-services-sum"></summary><div class="pick-panel" id="pick-services-panel"></div></details>
+          <label class="switch"><input type="checkbox" id="chk-mine"><span data-i18n="f_only">Sadece izlediklerimi göster</span></label>
+          <button class="linkish" id="btn-clear-watch" type="button" data-i18n="f_clear">Temizle</button>
+        </div>
+      </section>
 
-loadStatus();
-setInterval(loadStatus, 60000);
-</script>
+      <div class="board-grid">
+        <section id="board" class="board" aria-labelledby="board-title">
+          <div class="sec-head">
+            <h2 id="board-title" data-i18n="board_title">Bölge ve servis tablosu</h2>
+            <p class="sec-desc" data-i18n="board_hint">Bir hücreye tıklayarak o servis ve bölgedeki olayları süzün.</p>
+          </div>
+          <div id="selection" class="selection" hidden></div>
+          <div class="hm-wrap"><div class="hm-scroll" id="hm-scroll"></div></div>
+          <div class="hm-foot">
+            <ul class="legend" id="legend"></ul>
+            <button class="linkish" id="btn-rows" type="button"></button>
+          </div>
+        </section>
+
+        <aside id="active" class="active" aria-labelledby="active-title">
+          <div class="sec-head">
+            <h2 id="active-title" data-i18n="active_title">Açık olaylar</h2>
+          </div>
+          <div id="active-list"></div>
+        </aside>
+      </div>
+
+      <section id="trend" class="sec" aria-labelledby="trend-title">
+        <div class="sec-head">
+          <h2 id="trend-title" data-i18n="trend_title">Son 24 saat</h2>
+          <p class="sec-desc" data-i18n="trend_desc">Sağlıklı sondaların medyan gecikmesi. Renkli bantlar sorunlu dönemleri gösterir.</p>
+        </div>
+        <div id="trend-chart" class="trend"></div>
+      </section>
+
+      <section id="probes" class="sec" aria-labelledby="probes-title">
+        <div class="sec-head">
+          <h2 id="probes-title" data-i18n="probes_title">Canlı sondalar</h2>
+          <p class="sec-desc" data-i18n="probes_desc">Her kontrol turunda AWS uç noktalarına gerçek bir istek atılır.</p>
+        </div>
+        <div class="table-scroll"><table class="ptable" id="ptable"></table></div>
+        <p class="note" data-i18n="probes_note">Ölçümler sunucu tarafından yapılır, sizin ağınızdaki gecikmeyi yansıtmaz.</p>
+      </section>
+
+      <section id="uptime" class="sec" aria-labelledby="uptime-title">
+        <div class="sec-head">
+          <h2 id="uptime-title" data-i18n="uptime_title">Son 90 gün</h2>
+          <p class="sec-desc" id="uptime-sum"></p>
+        </div>
+        <div id="uptime-bars" class="bars" role="img"></div>
+        <p class="note" id="uptime-note"></p>
+      </section>
+
+      <section id="history" class="sec" aria-labelledby="history-title">
+        <div class="sec-head">
+          <h2 id="history-title" data-i18n="hist_title">Olay geçmişi</h2>
+        </div>
+        <div class="hist-controls">
+          <input type="search" id="q" class="input" autocomplete="off" data-i18n-ph="search_ph" placeholder="Olay, servis veya bölge ara">
+          <select id="f-status" class="input" aria-label="Durum"></select>
+          <select id="f-sev" class="input" aria-label="Şiddet"></select>
+        </div>
+        <div id="hist-list" class="hist"></div>
+        <button class="more" id="btn-more" type="button" hidden></button>
+      </section>
+
+      <section id="about" class="sec about" aria-labelledby="about-title">
+        <div class="sec-head">
+          <h2 id="about-title" data-i18n="about_title">Veri nereden geliyor, ne kadar güvenilir?</h2>
+          <p class="sec-desc" data-i18n="about_lead">Bu panel tek bir kaynağa güvenmez. Üç bağımsız sinyali karşılaştırır ve hangisine ne kadar güvenilebileceğini aşağıda açıkça gösterir.</p>
+        </div>
+        <div id="about-body"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <p id="foot-text"></p>
+      <p><a href="/api/status" data-i18n="foot_json">JSON verisi</a>
+        <a href="/api/health" data-i18n="foot_health">Sağlık kontrolü</a>
+        <a href="https://github.com/Letanom/aws-status" rel="noopener" data-i18n="foot_src">Kaynak kodu</a></p>
+    </div>
+  </footer>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <script src="/app.js" defer></script>
 </body>
 </html>
